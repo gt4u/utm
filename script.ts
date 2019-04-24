@@ -7,7 +7,7 @@ class GT4Utm {
     }
 
     private get expires() {
-        return this.options.expires || 10800;
+        return GT4Utm.normalizeCookieExpires(this.options.expires || 10800);
     }
 
     private set expires(value: number) {
@@ -35,11 +35,7 @@ class GT4Utm {
         return matches ? decodeURIComponent(matches[1]) : null;
     }
 
-    private setCookie(name, value, options = null) {
-
-        options.expires = options.expires || this.expires;
-
-        options.expires = GT4Utm.normalizeCookieExpires(options.expires);
+    private setCookie(name, value, options = {expires: this.expires}) {
 
         value = encodeURIComponent(value);
 

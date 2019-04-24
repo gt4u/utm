@@ -5,7 +5,7 @@ var GT4Utm = /** @class */ (function () {
     }
     Object.defineProperty(GT4Utm.prototype, "expires", {
         get: function () {
-            return this.options.expires || 10800;
+            return GT4Utm.normalizeCookieExpires(this.options.expires || 10800);
         },
         set: function (value) {
             this.options.expires = value;
@@ -34,9 +34,7 @@ var GT4Utm = /** @class */ (function () {
         return matches ? decodeURIComponent(matches[1]) : null;
     };
     GT4Utm.prototype.setCookie = function (name, value, options) {
-        if (options === void 0) { options = null; }
-        options.expires = options.expires || this.expires;
-        options.expires = GT4Utm.normalizeCookieExpires(options.expires);
+        if (options === void 0) { options = { expires: this.expires }; }
         value = encodeURIComponent(value);
         var updatedCookie = "gt4u_" + name + "=" + value;
         for (var propName in options) {
