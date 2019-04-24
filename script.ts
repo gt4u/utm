@@ -29,6 +29,7 @@ class GT4Utm {
     }
 
     private static getCookie(name) {
+        name = `gt4u_${name}`;
         const matches = document.cookie.match(new RegExp(
             "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
         ));
