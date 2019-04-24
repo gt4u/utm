@@ -123,7 +123,6 @@ class GT4Utm {
 
     public init() {
         this.setCookie('website_page', location.href);
-        this.setCookie('hostname', location.hostname.replace("www.", ""));
         if (GT4Utm.getCookie('referrer') === null) {
             this.setCookie('referrer', document.referrer);
             this.setCookiesByRules();

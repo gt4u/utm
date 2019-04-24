@@ -76,7 +76,10 @@ var GT4Utm = /** @class */ (function () {
                 continue;
             }
             var urlAttributeName = this.urlParseRules[cookieName];
-            this.setCookie(cookieName, GT4Utm.getUrlAttribute(urlAttributeName));
+            var urlAttribute = GT4Utm.getUrlAttribute(urlAttributeName);
+            if (urlAttribute) {
+                this.setCookie(cookieName, urlAttribute);
+            }
         }
     };
     GT4Utm.prototype.setCityCookie = function () {
@@ -104,7 +107,6 @@ var GT4Utm = /** @class */ (function () {
     };
     GT4Utm.prototype.init = function () {
         this.setCookie('website_page', location.href);
-        this.setCookie('hostname', location.hostname.replace("www.", ""));
         if (GT4Utm.getCookie('referrer') === null) {
             this.setCookie('referrer', document.referrer);
             this.setCookiesByRules();
