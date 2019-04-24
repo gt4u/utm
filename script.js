@@ -30,7 +30,7 @@ var GT4Utm = /** @class */ (function () {
         configurable: true
     });
     GT4Utm.getCookie = function (name) {
-        var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([.$?*|{}()[]\\\/+^])/g, '\\$1') + "=([^;]*)"));
+        var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
         return matches ? decodeURIComponent(matches[1]) : null;
     };
     GT4Utm.prototype.setCookie = function (name, value, options) {
