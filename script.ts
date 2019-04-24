@@ -92,7 +92,10 @@ class GT4Utm {
                 continue;
             }
             let urlAttributeName = this.urlParseRules[cookieName];
-            this.setCookie(cookieName, GT4Utm.getUrlAttribute(urlAttributeName));
+            let urlAttribute = GT4Utm.getUrlAttribute(urlAttributeName);
+            if (urlAttribute) {
+                this.setCookie(cookieName, urlAttribute);
+            }
         }
     }
 
