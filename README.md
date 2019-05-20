@@ -1,7 +1,7 @@
 #Использование
 На стороне клинта во всех "входных" (обычно: footer, header) страницах необходимо вставить следующий код:
 ```html
-  	<script src="https://cdn.jsdelivr.net/gh/gt4u/utm@v1.0.2/script.min.js"></script>
+  	<script src="https://cdn.jsdelivr.net/gh/gt4u/utm@v1/script.min.js"></script>
 	<script>
 		(new GT4Utm).init()
 	</script>
