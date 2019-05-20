@@ -85,8 +85,8 @@ var GT4Utm = /** @class */ (function () {
     };
     GT4Utm.prototype.setCityCookie = function () {
         var _this = this;
-        this.getJSON("https://ip-api.io/json/", function () {
-            _this.setCookie('city', document.referrer);
+        this.getJSON("https://ip-api.io/json/", function (result) {
+            _this.setCookie('city', result.city || result.country_name);
         });
     };
     GT4Utm.prototype.getJSON = function (url, success, error) {
@@ -109,10 +109,13 @@ var GT4Utm = /** @class */ (function () {
     GT4Utm.prototype.init = function () {
         this.setCookie('website_page', location.href);
         if (GT4Utm.getCookie('referrer') === null) {
-            this.setCookie('referrer', document.referrer);
+            this.setCookie('referrer', GT4Utm.getReferrer());
             this.setCookiesByRules();
             this.setCityCookie();
         }
+    };
+    GT4Utm.getReferrer = function () {
+        return ~document.referrer.indexOf(location.host) ? "" : document.referrer;
     };
     return GT4Utm;
 }());

@@ -102,8 +102,8 @@ class GT4Utm {
 
     private setCityCookie() {
         let _this = this;
-        this.getJSON("https://ip-api.io/json/", function () {
-            _this.setCookie('city', document.referrer);
+        this.getJSON("https://ip-api.io/json/", function (result) {
+            _this.setCookie('city', result.city || result.country_name);
         })
     }
 
@@ -125,10 +125,14 @@ class GT4Utm {
     public init() {
         this.setCookie('website_page', location.href);
         if (GT4Utm.getCookie('referrer') === null) {
-            this.setCookie('referrer', document.referrer);
+            this.setCookie('referrer', GT4Utm.getReferrer());
             this.setCookiesByRules();
             this.setCityCookie();
         }
+    }
+
+    private static getReferrer() {
+        return ~document.referrer.indexOf(location.host) ? "" : document.referrer;
     }
 
 }
