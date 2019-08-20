@@ -36,7 +36,7 @@ class GT4Utm {
         return matches ? decodeURIComponent(matches[1]) : null;
     }
 
-    private setCookie(name, value, options = {expires: this.expires}) {
+    private setCookie(name, value, options = {expires: this.expires, path: '/'}) {
 
         value = encodeURIComponent(value);
 
