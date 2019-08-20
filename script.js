@@ -35,7 +35,7 @@ var GT4Utm = /** @class */ (function () {
         return matches ? decodeURIComponent(matches[1]) : null;
     };
     GT4Utm.prototype.setCookie = function (name, value, options) {
-        if (options === void 0) { options = { expires: this.expires }; }
+        if (options === void 0) { options = { expires: this.expires, path: '/' }; }
         value = encodeURIComponent(value);
         var updatedCookie = "gt4u_" + name + "=" + value;
         for (var propName in options) {
