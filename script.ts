@@ -124,7 +124,8 @@ class GT4Utm {
 
     public init() {
         this.setCookie('website_page', location.href);
-        if (GT4Utm.getCookie('referrer') === null) {
+
+        if (GT4Utm.getCookie('referrer') === null || this.shouldUpdateUtmCookie()) {
             this.setCookie('referrer', GT4Utm.getReferrer());
             this.setCookiesByRules();
             this.setCityCookie();
@@ -133,6 +134,53 @@ class GT4Utm {
 
     private static getReferrer() {
         return ~document.referrer.indexOf(location.host) ? "" : document.referrer;
+    }
+
+    private shouldUpdateUtmCookie() {
+        let savedUtmValuesString = '';
+        for (let cookieName in this.urlParseRules) {
+            if (false === this.urlParseRules.hasOwnProperty(cookieName)) {
+                continue;
+            }
+
+            let utmCookieValue = GT4Utm.getCookie(cookieName);
+            if (utmCookieValue){
+                savedUtmValuesString += GT4Utm.getCookie('cookieName');
+            }
+        }
+
+        let currentUtmValuesString = '';
+        for (let cookieName in this.urlParseRules) {
+            if (false === this.urlParseRules.hasOwnProperty(cookieName)) {
+                continue;
+            }
+            let urlAttributeName = this.urlParseRules[cookieName];
+            let urlAttribute = GT4Utm.getUrlAttribute(urlAttributeName);
+            if (urlAttribute) {
+                currentUtmValuesString += urlAttribute;
+            }
+        }
+
+        if (currentUtmValuesString.length && currentUtmValuesString !== savedUtmValuesString){
+            this.clearGt4uUtmCookie();
+            return true;
+        }
+
+        return false;
+    }
+
+    private clearGt4uUtmCookie() {
+        for (let cookieName in this.urlParseRules) {
+            if (false === this.urlParseRules.hasOwnProperty(cookieName)) {
+                continue;
+            }
+            this.deleteCookie(cookieName);
+        }
+    }
+
+    private deleteCookie(name) {
+        name = `gt4u_${name}`;
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     }
 
 }

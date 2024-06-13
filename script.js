@@ -10,7 +10,7 @@ var GT4Utm = /** @class */ (function () {
         set: function (value) {
             this.options.expires = value;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(GT4Utm.prototype, "urlParseRules", {
@@ -26,26 +26,26 @@ var GT4Utm = /** @class */ (function () {
         set: function (rules) {
             this.options.urlParseRules = rules;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     GT4Utm.getCookie = function (name) {
-        name = "gt4u_" + name;
+        name = "gt4u_".concat(name);
         var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
         return matches ? decodeURIComponent(matches[1]) : null;
     };
     GT4Utm.prototype.setCookie = function (name, value, options) {
         if (options === void 0) { options = { expires: this.expires, path: '/' }; }
         value = encodeURIComponent(value);
-        var updatedCookie = "gt4u_" + name + "=" + value;
+        var updatedCookie = "gt4u_".concat(name, "=").concat(value);
         for (var propName in options) {
             if (false === options.hasOwnProperty(propName)) {
                 continue;
             }
             var propValue = options[propName];
-            updatedCookie += "; " + propName;
+            updatedCookie += "; ".concat(propName);
             if (propValue !== true) {
-                updatedCookie += "=" + propValue;
+                updatedCookie += "=".concat(propValue);
             }
         }
         document.cookie = updatedCookie;
@@ -65,7 +65,7 @@ var GT4Utm = /** @class */ (function () {
         get: function () {
             return (new URL(location.href)).searchParams;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     GT4Utm.getUrlAttribute = function (name) {
@@ -108,7 +108,7 @@ var GT4Utm = /** @class */ (function () {
     };
     GT4Utm.prototype.init = function () {
         this.setCookie('website_page', location.href);
-        if (GT4Utm.getCookie('referrer') === null) {
+        if (GT4Utm.getCookie('referrer') === null || this.shouldUpdateUtmCookie()) {
             this.setCookie('referrer', GT4Utm.getReferrer());
             this.setCookiesByRules();
             this.setCityCookie();
@@ -116,6 +116,46 @@ var GT4Utm = /** @class */ (function () {
     };
     GT4Utm.getReferrer = function () {
         return ~document.referrer.indexOf(location.host) ? "" : document.referrer;
+    };
+    GT4Utm.prototype.shouldUpdateUtmCookie = function () {
+        var savedUtmValuesString = '';
+        for (var cookieName in this.urlParseRules) {
+            if (false === this.urlParseRules.hasOwnProperty(cookieName)) {
+                continue;
+            }
+            var utmCookieValue = GT4Utm.getCookie(cookieName);
+            if (utmCookieValue) {
+                savedUtmValuesString += GT4Utm.getCookie('cookieName');
+            }
+        }
+        var currentUtmValuesString = '';
+        for (var cookieName in this.urlParseRules) {
+            if (false === this.urlParseRules.hasOwnProperty(cookieName)) {
+                continue;
+            }
+            var urlAttributeName = this.urlParseRules[cookieName];
+            var urlAttribute = GT4Utm.getUrlAttribute(urlAttributeName);
+            if (urlAttribute) {
+                currentUtmValuesString += urlAttribute;
+            }
+        }
+        if (currentUtmValuesString.length && currentUtmValuesString !== savedUtmValuesString) {
+            this.clearGt4uUtmCookie();
+            return true;
+        }
+        return false;
+    };
+    GT4Utm.prototype.clearGt4uUtmCookie = function () {
+        for (var cookieName in this.urlParseRules) {
+            if (false === this.urlParseRules.hasOwnProperty(cookieName)) {
+                continue;
+            }
+            this.deleteCookie(cookieName);
+        }
+    };
+    GT4Utm.prototype.deleteCookie = function (name) {
+        name = "gt4u_".concat(name);
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     };
     return GT4Utm;
 }());
